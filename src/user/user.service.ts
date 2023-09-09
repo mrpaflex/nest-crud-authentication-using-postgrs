@@ -4,12 +4,13 @@ import { CreateUserDto } from 'src/Dto/user.Dto';
 import { CreateUserEntity } from 'src/entities/user.entity';
 import {sign} from 'jsonwebtoken';
 import { Repository } from 'typeorm';
+import { encodedPassword } from 'util/bcrypt';
 
 @Injectable()
 export class UserService {
    constructor(@InjectRepository(CreateUserEntity) private readonly userserviRepo: Repository<CreateUserEntity>){}
 
-   async createAuser(createUserDto: CreateUserDto): Promise<any>{//note the any supppose takes in CreateUserEntity
+   async createAuser(createUserDto: CreateUserDto): Promise<CreateUserEntity>{//note the any supppose takes in CreateUserEntity : Promise<CreateUserEntity>
       
 
       const checkEmail = await this.userserviRepo.findOneBy({email: createUserDto.email});
@@ -18,9 +19,9 @@ export class UserService {
       if (checkEmail || checkUsername) {
          throw new HttpException('user with same credential already exit', HttpStatus.UNPROCESSABLE_ENTITY)
       }else{
-         const newuser =  await this.userserviRepo.save(createUserDto)
- 
-         return newuser;
+      
+         const newuser =  await this.userserviRepo.create(createUserDto);
+         return await this.userserviRepo.save(newuser)
       }
 
    }

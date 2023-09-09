@@ -1,5 +1,5 @@
 import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { Hash } from "crypto";
+import * as bcrypt from 'bcrypt';
 import { Exclude } from "class-transformer";
 
 
@@ -24,9 +24,11 @@ export class CreateUserEntity{
     @Column()
     @Exclude()
     password: string;
-    // @BeforeInsert()
-    // async hashPassword(){
-    //     this.password = await new Hash(this.password, 10);
-    // }
 
+    @BeforeInsert()
+    async hashPassword() {
+      if (this.password) {
+        this.password = await bcrypt.hash(this.password, 10);
+      }
+    }
 }
