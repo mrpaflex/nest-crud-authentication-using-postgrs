@@ -22,7 +22,7 @@ export class CreateUserEntity{
     image: string
 
     @Column()
-    @Exclude()
+    //@Exclude()
     password: string;
 
     @BeforeInsert()

@@ -4,6 +4,9 @@
 package-lock.json
 package.json
 
+jwtSecret
+
+
 # Logs
 logs
 *.log
