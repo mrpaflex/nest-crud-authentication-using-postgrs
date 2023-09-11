@@ -8,6 +8,7 @@ import { encodedPassword } from 'util/bcrypt';
 import { UserLoginDTO } from 'src/Dto/user.login.Dto';
 import * as bcrypt from 'bcrypt'
 import { JWT_SECRET } from './jwtSecret/userjwt';
+import { UserUpdateDto } from 'src/Dto/user.Update';
 
 @Injectable()
 export class UserService {
@@ -40,7 +41,7 @@ export class UserService {
             throw new HttpException(`password does'nt matche`, HttpStatus.UNPROCESSABLE_ENTITY)
          }else{
             delete finduser.password;
-            return finduser;
+            return finduser
          }
       }
    }
@@ -50,6 +51,15 @@ export class UserService {
       return await this.userserviRepo.findOne({where: {id: id}})
    }
 
+   //update user
+   async updateAuser(id: number, updateuserDto: UserUpdateDto): Promise<CreateUserEntity>{
+      const checkuser = await this.userserviRepo.findOneBy({id})
+      if(!checkuser){
+         throw new HttpException(`user does'nt exit `, HttpStatus.NOT_FOUND)
+      }
+     const updatedUser =  Object.assign(checkuser, updateuserDto);
+     return await this.userserviRepo.save(updatedUser)
+   }
    generateJwt(user: CreateUserEntity) {
       return sign({
          id: user.id,
