@@ -47,10 +47,4 @@ export class UserController {
         return await this.userservice.updateAuser(userId, updateuserDto)
     }
 
-    // @Put('update')
-    // @UseGuards(AuthGuard)
-    // async updateuser(@Param('user') userId: number, @Body() userupdateDto: UserUpdateDto): Promise<CreateUserEntity>{
-    //     return await this.userservice.updateAuser(+userId, userupdateDto)
-    // }
-
 }
