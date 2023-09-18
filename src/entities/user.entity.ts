@@ -1,6 +1,6 @@
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import * as bcrypt from 'bcrypt';
-import { Exclude } from "class-transformer";
+import { ArticleEntity } from "./article.entity";
 
 
 @Entity()
@@ -22,7 +22,6 @@ export class CreateUserEntity{
     image: string
 
     @Column()
-    //@Exclude()
     password: string;
 
     @BeforeInsert()
@@ -31,4 +30,8 @@ export class CreateUserEntity{
         this.password = await bcrypt.hash(this.password, 10);
       }
     }
+
+    //relationship
+    @OneToMany(()=> ArticleEntity, (article)=> article.author)
+    articles: ArticleEntity[]
 }

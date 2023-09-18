@@ -1,3 +1,4 @@
+import { ArticleEntity } from "src/entities/article.entity";
 import { tagEntity } from "src/entities/tag.entity";
 import { CreateUserEntity } from "src/entities/user.entity";
 import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions";
@@ -9,7 +10,7 @@ password: '12345',
 port: 5432,
 database: 'tagsDB',
 username: 'postgres',
-entities: [tagEntity, CreateUserEntity],
+entities: [tagEntity, CreateUserEntity, ArticleEntity],
 synchronize: true
 
 }

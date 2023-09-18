@@ -10,3 +10,4 @@ export class UserUpdateDto extends PartialType(CreateUserDto){
     
     // image:string
 }
+

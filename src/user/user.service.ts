@@ -24,6 +24,7 @@ export class UserService {
       }else{
       
          const newuser =  await this.userserviRepo.create(createUserDto);
+         delete newuser.password
          return await this.userserviRepo.save(newuser)
       }
 
@@ -58,6 +59,7 @@ export class UserService {
          throw new HttpException(`user does'nt exit `, HttpStatus.NOT_FOUND)
       }
      const updatedUser =  Object.assign(checkuser, updateuserDto);
+     delete updatedUser.password;
      return await this.userserviRepo.save(updatedUser)
    }
    generateJwt(user: CreateUserEntity) {

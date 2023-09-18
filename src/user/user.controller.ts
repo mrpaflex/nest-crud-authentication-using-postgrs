@@ -43,8 +43,8 @@ export class UserController {
     //update a user
     @Put('update')
     @UseGuards(AuthGuard)
-    async updateuser(@User('user') userId: number, @Body() updateuserDto: UserUpdateDto): Promise<CreateUserEntity>{
-        return await this.userservice.updateAuser(userId, updateuserDto)
+    async updateuser(@User('id') currentUserId: number, @Body() updateuserDto: UserUpdateDto): Promise<CreateUserEntity>{
+        return await this.userservice.updateAuser(currentUserId, updateuserDto)
     }
 
 }
