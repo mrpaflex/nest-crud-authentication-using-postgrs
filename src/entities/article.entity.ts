@@ -1,12 +1,15 @@
-import {BeforeUpdate, Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import { CreateUserEntity } from "./user.entity";
+import slugify from "slugify";
+
+const random = (Math.random()*Math.pow(3, 2) | 0).toString(12)
 
 @Entity()
 export class ArticleEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({default: 'man like'})
+    @Column()
     slug: string;
 
     @Column()
@@ -37,6 +40,15 @@ export class ArticleEntity {
         }
     }
     
+    @BeforeInsert()
+    @BeforeUpdate()
+    generateSlug() {
+        
+        this.slug = slugify(this.title, { lower: true }) +'_'+ random;
+  
+      
+    }
+
     @ManyToOne(()=> CreateUserEntity, (user)=> user.articles)
     author: CreateUserEntity;
 }
