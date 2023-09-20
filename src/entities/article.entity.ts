@@ -2,7 +2,7 @@ import {BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne, PrimaryGeneratedC
 import { CreateUserEntity } from "./user.entity";
 import slugify from "slugify";
 
-const random = (Math.random()*Math.pow(3, 2) | 0).toString(12)
+let random = (Math.random()*Math.pow(3, 2) | 0).toString(12)
 
 @Entity()
 export class ArticleEntity {
@@ -43,12 +43,9 @@ export class ArticleEntity {
     @BeforeInsert()
     @BeforeUpdate()
     generateSlug() {
-        
         this.slug = slugify(this.title, { lower: true }) +'_'+ random;
-  
-      
     }
 
-    @ManyToOne(()=> CreateUserEntity, (user)=> user.articles)
+    @ManyToOne(()=> CreateUserEntity, (user)=> user.articles, {eager: true})
     author: CreateUserEntity;
 }

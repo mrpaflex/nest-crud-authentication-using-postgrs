@@ -26,7 +26,7 @@ export class UserController {
     @Post('/login')
     @UsePipes(new ValidationPipe())
     async loginuser(@Body() logingDTO: UserLoginDTO){
-        const loggedUser = await this.userservice.loginaUser(logingDTO);
+    const loggedUser = await this.userservice.loginaUser(logingDTO);
        const showloggedInToken =  await this.userservice.builderUserResponse(loggedUser)
       // return loggedUser
        return showloggedInToken;

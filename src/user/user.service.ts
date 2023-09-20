@@ -24,8 +24,11 @@ export class UserService {
       }else{
       
          const newuser =  await this.userserviRepo.create(createUserDto);
-         delete newuser.password
-         return await this.userserviRepo.save(newuser)
+         //delete newuser.password
+         const savedNewUser = await this.userserviRepo.save(newuser)
+         delete savedNewUser.password
+         return savedNewUser
+         
       }
 
    }
