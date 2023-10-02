@@ -5,7 +5,7 @@ import { User } from 'src/user/customDecorator/user.decorator';
 import { AuthGuard } from 'src/user/guards/auth.guard';
 import { ArticlesService } from './articles.service';
 import { ArticleEntity } from 'src/entities/article.entity';
-import { ArticleResponseInterface } from './type/article.interface';
+import { ArticleResponseInterfaceSingle } from './type/article.interface';
 import { ArticleUpdateDTO } from 'src/Dto/article.Update.Dto';
 import { ArticlesResponseInterface } from './type/articles.Response.Interface';
 
@@ -13,9 +13,29 @@ import { ArticlesResponseInterface } from './type/articles.Response.Interface';
 export class ArticlesController {
     constructor(private articlesService: ArticlesService){}
 
-    @Get()
+    @Get('findall')
     async findall(@User('id') currentUserId: number, @Query() query: any): Promise<ArticlesResponseInterface>{
         return await this.articlesService.findall(currentUserId, query)
+    }
+
+
+
+    @Post('like/:slug')
+    @UseGuards(AuthGuard)
+    async addlike(@User('id') currentUserId: number, @Param('slug') slug: string): Promise<ArticleResponseInterfaceSingle>{
+        const articleliked = await this.articlesService.likearticle(currentUserId, slug);
+        return await this.articlesService.buildArticlesResponse(articleliked)
+        
+       
+    }
+
+    @Delete('delike/:slug')
+    @UseGuards(AuthGuard)
+    async dislike(@User('id') currentUserId: number, @Param('slug') slug: string): Promise<ArticleResponseInterfaceSingle>{
+        const articledisliked = await this.articlesService.dislikearticle(currentUserId, slug);
+        return await this.articlesService.buildArticlesResponse(articledisliked)
+        
+       
     }
 
     @Post('create')
