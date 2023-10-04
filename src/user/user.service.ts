@@ -10,17 +10,28 @@ import * as bcrypt from 'bcrypt'
 import { JWT_SECRET } from './jwtSecret/userjwt';
 import { UserUpdateDto } from 'src/Dto/user.Update';
 
+
+
 @Injectable()
 export class UserService {
    constructor(@InjectRepository(CreateUserEntity) private readonly userserviRepo: Repository<CreateUserEntity>){}
+   
 
    async createAuser(createUserDto: CreateUserDto): Promise<CreateUserEntity>{
+      const errors = []
 
       const checkEmail = await this.userserviRepo.findOneBy({email: createUserDto.email});
       const checkUsername = await this.userserviRepo.findOneBy({username: createUserDto.username});
 
+      if (checkEmail) {
+         errors.push('email has already been taken')
+      }
+      if (checkUsername) {
+         errors.push('username has already been taken')
+      }
       if (checkEmail || checkUsername) {
-         throw new HttpException('user with same credential already exit', HttpStatus.UNPROCESSABLE_ENTITY)
+         
+         throw new HttpException(errors, HttpStatus.UNPROCESSABLE_ENTITY)
       }else{
       
          const newuser =  await this.userserviRepo.create(createUserDto);
@@ -35,14 +46,21 @@ export class UserService {
 
    //user login
    async loginaUser(userloginDto: UserLoginDTO): Promise<CreateUserEntity>{
+      const errors = [];
+      
       const finduser = await this.userserviRepo.findOneBy({email: userloginDto.email});
+         if (!finduser) {
+            errors.push('user does not exist')
+         }
       if (!finduser) {
-         throw new HttpException(`user doesn't exit`, HttpStatus.UNPROCESSABLE_ENTITY)
+         throw new HttpException(errors, HttpStatus.UNPROCESSABLE_ENTITY)
       }else{
          const iSPasswordCorred = await bcrypt.compare(userloginDto.password, finduser.password)
-
          if (!iSPasswordCorred) {
-            throw new HttpException(`password does'nt matche`, HttpStatus.UNPROCESSABLE_ENTITY)
+            errors.push('password does\'nt matched')
+         }
+         if (!iSPasswordCorred) {
+            throw new HttpException(errors, HttpStatus.UNPROCESSABLE_ENTITY)
          }else{
             delete finduser.password;
             return finduser

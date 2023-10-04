@@ -5,9 +5,10 @@ import { UserModule } from './user/user.module';
 import confiDb from './config/confidb';
 import { AuthMiddleware } from './user/middleware/auth.middleware';
 import { ArticlesModule } from './articles/articles.module';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(confiDb), TagModule, UserModule, ArticlesModule]
+  imports: [TypeOrmModule.forRoot(confiDb), TagModule, UserModule, ArticlesModule, ProfileModule]
 })
 export class AppModule {
   //this make this middleware global middleware

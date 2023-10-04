@@ -8,6 +8,7 @@ import { DataSource, DeleteResult, QueryBuilder, Repository, getRepository } fro
 import { ArticleResponseInterfaceSingle } from './type/article.interface';
 import { ArticleUpdateDTO } from 'src/Dto/article.Update.Dto';
 import { ArticlesResponseInterface } from './type/articles.Response.Interface';
+import { followEntity } from 'src/profile/entity/follow.entity';
 
 
 
@@ -17,6 +18,8 @@ constructor(@InjectRepository(ArticleEntity)
     private readonly articleRepository: Repository<ArticleEntity>,
     @InjectRepository(CreateUserEntity)
     private readonly userRepos: Repository<CreateUserEntity>,
+    @InjectRepository(followEntity)
+    private readonly followRepos: Repository<followEntity>,
     private readonly dataSource: DataSource,
     
  ){}
@@ -71,7 +74,8 @@ async dislikearticle(userId: number, slug: string): Promise<ArticleEntity>{
     
 }
 
-async findall(currentUserId: number, query: any): Promise<ArticlesResponseInterface>{
+async findallarticles(currentUserId: number, query: any): Promise<ArticlesResponseInterface>{
+
     const queryBuilder = this.dataSource.getRepository(ArticleEntity)
     .createQueryBuilder('articles').leftJoinAndSelect('articles.author', 'author');
     
@@ -94,6 +98,7 @@ async findall(currentUserId: number, query: any): Promise<ArticlesResponseInterf
                 });
             }
     }
+    //ends here
 
     if(query.liked){
         const author = await this.userRepos.findOne({
@@ -146,6 +151,35 @@ if (currentUserId) {
     
     return {articles: articleWithFavourited, articleCount};
 }
+
+
+async getfeeds(userId: number, query: any): Promise<ArticlesResponseInterface>{
+    const follows = await this.followRepos.find({
+        where: {
+            followerId: userId
+        }});
+    if (follows.length === 0) {
+        return {articles: [], articleCount: 0};
+    }
+
+    const followinguserId = follows.map((follow)=>{follow.followingId});
+    const queryBuilder = this.dataSource.getRepository(ArticleEntity)
+    .createQueryBuilder('articles').leftJoinAndSelect('articles.author', 'author').where('articles.authorId IN (:...ids)', {
+        ids: followinguserId
+    })
+    queryBuilder.orderBy('articles.createdAt', 'DESC');
+
+    const articleCount = await queryBuilder.getCount()
+    if (query.limit) {
+        queryBuilder.offset(query.offset);
+    }
+
+    const articles = await queryBuilder.getMany()
+    return {articles, articleCount}
+
+}
+
+
 
 async findBySlug(slug: string){
 

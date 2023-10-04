@@ -7,6 +7,7 @@ import { ExpressRequest } from './types/expressRequest.interface';
 import { User } from './customDecorator/user.decorator';
 import { AuthGuard } from './guards/auth.guard';
 import { UserUpdateDto } from 'src/Dto/user.Update';
+import { BackendValidationPipe } from 'src/shared/pipes/backendvalidationPipes';
 
 @Controller('user')
 
@@ -16,7 +17,7 @@ export class UserController {
 
     
     @Post('signup')
-    @UsePipes(new ValidationPipe())
+    @UsePipes(new BackendValidationPipe())
    async createusers(@Body() createUserDto: CreateUserDto): Promise<CreateUserEntity>{
         const conUser = await  this.userservice.createAuser(createUserDto);
         return conUser;
@@ -24,7 +25,7 @@ export class UserController {
     }
 
     @Post('/login')
-    @UsePipes(new ValidationPipe())
+    @UsePipes(new BackendValidationPipe())
     async loginuser(@Body() logingDTO: UserLoginDTO){
     const loggedUser = await this.userservice.loginaUser(logingDTO);
        const showloggedInToken =  await this.userservice.builderUserResponse(loggedUser)
