@@ -4,7 +4,7 @@ import { CreateUserDto } from 'src/Dto/user.Dto';
 import { CreateUserEntity } from 'src/entities/user.entity';
 import {sign} from 'jsonwebtoken';
 import { Repository } from 'typeorm';
-import { encodedPassword } from 'util/bcrypt';
+//import { encodedPassword } from 'util/bcrypt';
 import { UserLoginDTO } from 'src/Dto/user.login.Dto';
 import * as bcrypt from 'bcrypt'
 import { JWT_SECRET } from './jwtSecret/userjwt';

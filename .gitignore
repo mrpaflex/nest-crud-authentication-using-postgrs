@@ -1,10 +1,12 @@
 # compiled output
 /dist
 /node_modules
-confidb.ts
+
+
 
 jwtSecret
 
+.env
 
 # Logs
 logs
